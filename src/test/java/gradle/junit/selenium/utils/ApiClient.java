@@ -15,7 +15,8 @@ public class ApiClient {
 
     private static final Logger log = LoggerFactory.getLogger(ApiClient.class);
 
-    private static final String BASE_URL = "http://localhost:3000";
+    // Read APP_URL from environment — uses host.docker.internal in CI, localhost locally
+    private static final String BASE_URL = System.getenv().getOrDefault("APP_URL", "http://localhost:3000");
     private static final String CONTENT_TYPE = "application/json";
 
     // AllureRestAssured filter — logs every request and response into the Allure report

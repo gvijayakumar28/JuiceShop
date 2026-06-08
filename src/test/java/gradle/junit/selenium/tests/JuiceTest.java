@@ -22,7 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Feature("Product Reviews")
 class JuiceTest extends BaseTest {
 
-    private static final String BASE_URL = "http://localhost:3000";
+    // Read APP_URL from environment — uses host.docker.internal in CI, localhost locally
+    private static final String BASE_URL = System.getenv().getOrDefault("APP_URL", "http://localhost:3000");
 
     Customer customer;
 

@@ -4,7 +4,8 @@ pipeline {
 
     // Environment variables available to all stages
     environment {
-        APP_URL = 'http://localhost:3000'
+        // host.docker.internal resolves to your Windows machine from inside Docker
+        APP_URL = 'http://host.docker.internal:3000'
         CI      = 'true'   // tells DriverFactory to run Chrome headless
     }
 
