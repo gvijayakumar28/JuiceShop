@@ -2,6 +2,10 @@ package gradle.junit.selenium.constants;
 
 public class Endpoints {
 
+    // Private constructor — prevents anyone from doing "new Endpoints()"
+    // This class only has static constants, no need to create an instance
+    private Endpoints() {}
+
     // Auth endpoints
     public static final String LOGIN = "/rest/user/login";
 
