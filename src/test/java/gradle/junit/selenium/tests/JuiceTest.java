@@ -3,7 +3,7 @@ package gradle.junit.selenium.tests;
 import gradle.junit.selenium.api.AuthApi;
 import gradle.junit.selenium.api.ProductApi;
 import gradle.junit.selenium.base.BaseTest;
-import gradle.junit.selenium.constants.Customer;
+import gradle.junit.selenium.model.Customer;
 import gradle.junit.selenium.pages.LoginPage;
 import gradle.junit.selenium.pages.ProductListPage;
 import gradle.junit.selenium.pages.ReviewPage;

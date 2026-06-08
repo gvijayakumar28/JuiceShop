@@ -1,4 +1,4 @@
-package gradle.junit.selenium.constants;
+package gradle.junit.selenium.model;
 
 import java.util.UUID;
 
@@ -59,8 +59,5 @@ public class Customer {
         public Customer build() {
             return new Customer(this.email, this.password, this.securityAnswer);
         }
-
-
     }
-
 }
