@@ -5,6 +5,7 @@ pipeline {
     // Environment variables available to all stages
     environment {
         APP_URL = 'http://localhost:3000'
+        CI      = 'true'   // tells DriverFactory to run Chrome headless
     }
 
     stages {
@@ -17,11 +18,22 @@ pipeline {
             }
         }
 
-        // Stage 2 — Give execute permission to gradlew (needed on Linux/Mac)
+        // Stage 2 — Install Chrome and give execute permission to gradlew
         stage('Setup') {
             steps {
-                echo 'Setting up Gradle wrapper...'
-                sh 'chmod +x gradlew'
+                echo 'Installing Chrome and setting up Gradle wrapper...'
+                sh '''
+                    which google-chrome || (
+                        apt-get update -qq &&
+                        apt-get install -y -qq wget gnupg &&
+                        wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - &&
+                        echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list &&
+                        apt-get update -qq &&
+                        apt-get install -y -qq google-chrome-stable
+                    )
+                    google-chrome --version
+                    chmod +x gradlew
+                '''
             }
         }
 
