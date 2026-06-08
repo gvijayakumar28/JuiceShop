@@ -1,0 +1,66 @@
+plugins {
+    id 'java'
+    id 'io.qameta.allure' version '2.12.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.seleniumhq.selenium:selenium-java:4.27.0'
+    testImplementation 'io.rest-assured:rest-assured:5.5.0'
+    implementation 'io.github.bonigarcia:webdrivermanager:5.9.2'
+    testImplementation 'org.hamcrest:hamcrest:3.0'
+
+    def junitJupiterVersion = '5.11.3'
+    testImplementation "org.junit.jupiter:junit-jupiter:$junitJupiterVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
+
+    def allureVersion = '2.29.0'
+    testImplementation "io.qameta.allure:allure-junit5:$allureVersion"
+    testImplementation "io.qameta.allure:allure-rest-assured:$allureVersion"
+
+    // SLF4J — logging API (write log messages using this)
+    testImplementation 'org.slf4j:slf4j-api:2.0.16'
+
+    // Logback — logging engine (actually writes the logs to console/file)
+    testImplementation 'ch.qos.logback:logback-classic:1.5.12'
+}
+
+allure {
+    version = '2.29.0'
+}
+
+// Deletes the test-output folder before every test run
+// So old logs, screenshots and reports are cleared — only fresh data remains
+task cleanTestOutput(type: Delete) {
+    delete 'test-output'
+}
+
+// Copies the generated Allure report into test-output/reports
+// Runs automatically after allureReport task
+task copyAllureReport(type: Copy) {
+    dependsOn allureReport
+    from 'build/reports/allure-report'
+    into 'test-output/reports'
+}
+
+test {
+    // Always clean test-output before running tests
+    dependsOn cleanTestOutput
+
+    // Tell Allure where to write the raw results during test run
+    systemProperty 'allure.results.directory', 'test-output/allure-results'
+
+    useJUnitPlatform()
+
+    // Show logs and test results in the terminal while tests run
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+        exceptionFormat = "full"
+    }
+}

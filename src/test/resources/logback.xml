@@ -1,0 +1,28 @@
+<configuration>
+
+    <!-- Console appender — prints logs to the terminal -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- Format: timestamp  [level]  ClassName - message -->
+            <pattern>%d{HH:mm:ss} [%-5level] %logger{20} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- File appender — saves all logs to test-output/logs/test-run.log -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>test-output/logs/test-run.log</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%-5level] %logger{30} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Root logger — applies to all classes -->
+    <!-- Level options: TRACE < DEBUG < INFO < WARN < ERROR -->
+    <!-- INFO means: show INFO, WARN and ERROR logs only -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+
+</configuration>
