@@ -2,11 +2,6 @@ pipeline {
 
     agent any
 
-    // Tools Jenkins needs — must be configured in Jenkins > Manage Jenkins > Tools
-    tools {
-        jdk 'JDK-17'
-    }
-
     // Environment variables available to all stages
     environment {
         APP_URL = 'http://localhost:3000'
