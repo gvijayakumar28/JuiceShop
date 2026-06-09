@@ -3,7 +3,6 @@ package gradle.junit.selenium.pages;
 import gradle.junit.selenium.base.BasePage;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class LoginPage extends BasePage {
@@ -16,8 +15,8 @@ public class LoginPage extends BasePage {
     private final By passwordField = By.id("password");
     private final By loginButton = By.id("loginButton");
 
-    public LoginPage(WebDriver driver) {
-        super(driver);
+    public LoginPage() {
+        super();
     }
 
     @Step("Open login page")
@@ -47,6 +46,6 @@ public class LoginPage extends BasePage {
         type(passwordField, password);
         click(loginButton);
         waitForUrlToContain("/#/search");
-        return new ProductListPage(driver);
+        return new ProductListPage();
     }
 }

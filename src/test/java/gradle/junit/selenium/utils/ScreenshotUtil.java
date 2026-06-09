@@ -1,6 +1,7 @@
 package gradle.junit.selenium.utils;
 
 import gradle.junit.selenium.constants.TestOutputPaths;
+import gradle.junit.selenium.driver.DriverManager;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -22,7 +23,7 @@ public class ScreenshotUtil {
 
     // Takes a screenshot, saves it as a PNG file and attaches it to Allure report
     public static void takeScreenshot(String screenshotName) {
-        WebDriver driver = DriverFactory.getDriver();
+        WebDriver driver = DriverManager.getDriver();
 
         if (driver == null) {
             log.warn("Cannot take screenshot — browser is not running");

@@ -2,7 +2,6 @@ package gradle.junit.selenium.pages;
 
 import gradle.junit.selenium.base.BasePage;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 
 public class BasketPage extends BasePage {
 
@@ -11,8 +10,8 @@ public class BasketPage extends BasePage {
     private final By basketItems = By.cssSelector("mat-row");
     private final By checkoutButton = By.xpath("//button[@routerlink='/address/select']");
 
-    public BasketPage(WebDriver driver) {
-        super(driver);
+    public BasketPage() {
+        super();
     }
 
     public BasketPage open(String baseUrl) {

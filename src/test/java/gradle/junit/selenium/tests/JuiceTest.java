@@ -7,7 +7,6 @@ import gradle.junit.selenium.model.Customer;
 import gradle.junit.selenium.pages.LoginPage;
 import gradle.junit.selenium.pages.ProductListPage;
 import gradle.junit.selenium.pages.ReviewPage;
-import gradle.junit.selenium.utils.DriverFactory;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
@@ -44,7 +43,7 @@ class JuiceTest extends BaseTest {
         String reviewText = "Great product, highly recommended!";
 
         // Step 1 - Open login page and dismiss popups
-        LoginPage loginPage = new LoginPage(DriverFactory.getDriver());
+        LoginPage loginPage = new LoginPage();
         loginPage.open(BASE_URL);
         loginPage.dismissPopups();
 

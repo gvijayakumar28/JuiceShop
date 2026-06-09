@@ -3,7 +3,6 @@ package gradle.junit.selenium.pages;
 import gradle.junit.selenium.base.BasePage;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 
 public class ReviewPage extends BasePage {
 
@@ -11,8 +10,8 @@ public class ReviewPage extends BasePage {
     private final By submitReviewButton = By.xpath("//button[@aria-label='Send the review']");
     private final By expandReviewsPanel = By.xpath("//mat-expansion-panel[@aria-label='Expand for Reviews']");
 
-    public ReviewPage(WebDriver driver) {
-        super(driver);
+    public ReviewPage() {
+        super();
     }
 
     @Step("Submit review: {reviewText}")

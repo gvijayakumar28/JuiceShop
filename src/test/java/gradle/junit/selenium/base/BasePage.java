@@ -1,5 +1,6 @@
 package gradle.junit.selenium.base;
 
+import gradle.junit.selenium.driver.DriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -8,13 +9,18 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
+/**
+ * Abstract base class for all Page Objects.
+ * Automatically obtains the WebDriver from DriverManager — no need to pass it in the constructor.
+ * All page classes extend this and inherit the shared Selenium helper methods.
+ */
 public abstract class BasePage {
 
     protected final WebDriver driver;
     protected final WebDriverWait wait;
 
-    public BasePage(WebDriver driver) {
-        this.driver = driver;
+    protected BasePage() {
+        this.driver = DriverManager.getDriver();
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
@@ -22,8 +28,8 @@ public abstract class BasePage {
         wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
     }
 
-    protected void click(WebElement locator) {
-        wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
+    protected void click(WebElement element) {
+        wait.until(ExpectedConditions.elementToBeClickable(element)).click();
     }
 
     protected void type(By locator, String text) {
