@@ -13,6 +13,7 @@ import io.qameta.allure.Story;
 import io.qameta.allure.Description;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -36,6 +37,8 @@ class JuiceTest extends BaseTest {
     }
 
     @Test
+    @Tag("ui")
+    @Tag("smoke")
     @DisplayName("Login and post product review via UI")
     @Story("Post review via browser")
     @Description("Login to JuiceShop, open a product, post a review and verify it is visible on screen")
@@ -65,6 +68,8 @@ class JuiceTest extends BaseTest {
     }
 
     @Test
+    @Tag("api")
+    @Tag("smoke")
     @DisplayName("Login and post product review via API")
     @Story("Post review via API")
     @Description("Login via API, search for a product, post a review and verify it is saved in the database")

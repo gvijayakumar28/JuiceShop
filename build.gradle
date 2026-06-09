@@ -48,19 +48,46 @@ task copyAllureReport(type: Copy) {
     into 'test-output/reports'
 }
 
-test {
-    // Always clean test-output before running tests
+// Common test configuration shared by all test tasks
+def commonTestConfig = {
     dependsOn cleanTestOutput
-
-    // Tell Allure where to write the raw results during test run
     systemProperty 'allure.results.directory', 'test-output/allure-results'
-
-    useJUnitPlatform()
-
-    // Show logs and test results in the terminal while tests run
     testLogging {
         events "passed", "skipped", "failed"
         showStandardStreams = true
         exceptionFormat = "full"
+    }
+}
+
+// Default task — runs ALL tests
+test {
+    configure commonTestConfig
+    useJUnitPlatform()
+}
+
+// Runs only tests tagged with @Tag("smoke")
+// Command: .\gradlew smokeTest
+task smokeTest(type: Test) {
+    configure commonTestConfig
+    useJUnitPlatform {
+        includeTags 'smoke'
+    }
+}
+
+// Runs only tests tagged with @Tag("ui")
+// Command: .\gradlew uiTest
+task uiTest(type: Test) {
+    configure commonTestConfig
+    useJUnitPlatform {
+        includeTags 'ui'
+    }
+}
+
+// Runs only tests tagged with @Tag("api")
+// Command: .\gradlew apiTest
+task apiTest(type: Test) {
+    configure commonTestConfig
+    useJUnitPlatform {
+        includeTags 'api'
     }
 }
