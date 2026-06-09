@@ -1,108 +1,98 @@
 package gradle.junit.selenium.utils;
 
-import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static io.restassured.RestAssured.given;
 
 /**
- * Common HTTP client with reusable methods for GET, POST, PUT, PATCH, DELETE.
+ * Common HTTP client wrapping RestAssured.
+ * Accepts a pre-configured RequestSpecification (base URL, headers, auth token, filters).
  * All API classes use this instead of writing raw RestAssured calls each time.
+ *
+ * Token management is handled externally — this client just executes HTTP calls.
  */
 public class ApiClient {
 
     private static final Logger log = LoggerFactory.getLogger(ApiClient.class);
 
-    // Read APP_URL from environment — uses host.docker.internal in CI, localhost locally
-    private static final String BASE_URL = System.getenv().getOrDefault("APP_URL", "http://localhost:3000");
-    private static final String CONTENT_TYPE = "application/json";
+    // The spec carries base URL, content type, Authorization header, and Allure filter
+    private final RequestSpecification spec;
 
-    // AllureRestAssured filter — logs every request and response into the Allure report
-    private static final AllureRestAssured ALLURE_FILTER = new AllureRestAssured();
+    public ApiClient(RequestSpecification spec) {
+        this.spec = spec;
+    }
 
     // -------------------------------------------------------
     // GET — fetch data, no request body needed
-    // Example: client.get("/rest/products/search?q=apple")
     // -------------------------------------------------------
     public Response get(String endpoint) {
-        log.info("GET {}", BASE_URL + endpoint);
+        log.info("GET {}", endpoint);
         Response response = given()
-                .filter(ALLURE_FILTER)
-                .header("Content-Type", CONTENT_TYPE)
+                .spec(spec)
                 .when()
-                .get(BASE_URL + endpoint)
+                .get(endpoint)
                 .andReturn();
         log.info("GET {} -> status {}", endpoint, response.getStatusCode());
         return response;
     }
 
     // -------------------------------------------------------
-    // POST — send a POJO body (RestAssured auto-converts to JSON)
-    // Example: client.post("/rest/user/login", new LoginRequest(email, password))
+    // POST — send a body (POJO auto-converted to JSON by RestAssured)
     // -------------------------------------------------------
     public Response post(String endpoint, Object body) {
-        log.info("POST {}", BASE_URL + endpoint);
+        log.info("POST {}", endpoint);
         Response response = given()
-                .filter(ALLURE_FILTER)
-                .header("Content-Type", CONTENT_TYPE)
+                .spec(spec)
                 .body(body)
                 .when()
-                .post(BASE_URL + endpoint)
+                .post(endpoint)
                 .andReturn();
         log.info("POST {} -> status {}", endpoint, response.getStatusCode());
         return response;
     }
 
     // -------------------------------------------------------
-    // PUT — send a POJO body with auth token
-    // Example: client.put("/rest/products/1/reviews", new ReviewRequest(...), token)
+    // PUT — update a resource with a body
     // -------------------------------------------------------
-    public Response put(String endpoint, Object body, String token) {
-        log.info("PUT {}", BASE_URL + endpoint);
+    public Response put(String endpoint, Object body) {
+        log.info("PUT {}", endpoint);
         Response response = given()
-                .filter(ALLURE_FILTER)
-                .header("Content-Type", CONTENT_TYPE)
-                .header("Authorization", "Bearer " + token)
+                .spec(spec)
                 .body(body)
                 .when()
-                .put(BASE_URL + endpoint)
+                .put(endpoint)
                 .andReturn();
         log.info("PUT {} -> status {}", endpoint, response.getStatusCode());
         return response;
     }
 
     // -------------------------------------------------------
-    // PATCH — send a POJO body with auth token
-    // Example: client.patch("/rest/products/1", new UpdateRequest(...), token)
+    // PATCH — partial update with a body
     // -------------------------------------------------------
-    public Response patch(String endpoint, Object body, String token) {
-        log.info("PATCH {}", BASE_URL + endpoint);
+    public Response patch(String endpoint, Object body) {
+        log.info("PATCH {}", endpoint);
         Response response = given()
-                .filter(ALLURE_FILTER)
-                .header("Content-Type", CONTENT_TYPE)
-                .header("Authorization", "Bearer " + token)
+                .spec(spec)
                 .body(body)
                 .when()
-                .patch(BASE_URL + endpoint)
+                .patch(endpoint)
                 .andReturn();
         log.info("PATCH {} -> status {}", endpoint, response.getStatusCode());
         return response;
     }
 
     // -------------------------------------------------------
-    // DELETE — remove a resource (auth required)
-    // Example: client.delete("/rest/products/1", token)
+    // DELETE — remove a resource
     // -------------------------------------------------------
-    public Response delete(String endpoint, String token) {
-        log.info("DELETE {}", BASE_URL + endpoint);
+    public Response delete(String endpoint) {
+        log.info("DELETE {}", endpoint);
         Response response = given()
-                .filter(ALLURE_FILTER)
-                .header("Content-Type", CONTENT_TYPE)
-                .header("Authorization", "Bearer " + token)
+                .spec(spec)
                 .when()
-                .delete(BASE_URL + endpoint)
+                .delete(endpoint)
                 .andReturn();
         log.info("DELETE {} -> status {}", endpoint, response.getStatusCode());
         return response;

@@ -6,9 +6,17 @@ import gradle.junit.selenium.utils.ApiClient;
 import gradle.junit.selenium.utils.ResponseValidator;
 import io.restassured.response.Response;
 
+/**
+ * Handles authentication API calls.
+ * Receives an ApiClient configured with a plain (unauthenticated) spec — login does not need a token.
+ */
 public class AuthApi {
 
-    private final ApiClient client = new ApiClient();
+    private final ApiClient client;
+
+    public AuthApi(ApiClient client) {
+        this.client = client;
+    }
 
     public String login(String email, String password) {
         LoginRequest loginRequest = new LoginRequest(email, password);

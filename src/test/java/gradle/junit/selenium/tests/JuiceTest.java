@@ -3,15 +3,14 @@ package gradle.junit.selenium.tests;
 import gradle.junit.selenium.api.AuthApi;
 import gradle.junit.selenium.api.ProductApi;
 import gradle.junit.selenium.base.BaseTest;
-import gradle.junit.selenium.model.Customer;
 import gradle.junit.selenium.pages.LoginPage;
 import gradle.junit.selenium.pages.ProductListPage;
 import gradle.junit.selenium.pages.ReviewPage;
+import gradle.junit.selenium.utils.ApiClient;
+import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
-import io.qameta.allure.Description;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -22,19 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Feature("Product Reviews")
 class JuiceTest extends BaseTest {
 
-    // Read APP_URL from environment — uses host.docker.internal in CI, localhost locally
     private static final String BASE_URL = System.getenv().getOrDefault("APP_URL", "http://localhost:3000");
-
-    Customer customer;
-
-    @BeforeAll
-    void setupCustomer() {
-        customer = new Customer.Builder()
-                .setEmail("gvijayakumarganesan92@gmail.com")
-                .setPassword("Automation@26")
-                .setSecurityAnswer("605601")
-                .build();
-    }
 
     @Test
     @Tag("ui")
@@ -74,20 +61,17 @@ class JuiceTest extends BaseTest {
     @Story("Post review via API")
     @Description("Login via API, search for a product, post a review and verify it is saved in the database")
     void loginAndPostProductReviewViaApi() {
-        AuthApi authApi = new AuthApi();
-        ProductApi productApi = new ProductApi();
+        // authSpec already has the token — no manual login needed
+        ApiClient authClient = new ApiClient(authSpec);
+        ProductApi productApi = new ProductApi(authClient);
 
-        // Step 1 - Login and get token
-        String token = authApi.login(customer.getEmail(), customer.getPassword());
-        customer.saveToken(token);
-
-        // Step 2 - Get a product id to post a review on
+        // Step 1 - Get a product id to post a review on
         int productId = productApi.getFirstProductId("apple");
 
-        // Step 3 - Post the review
-        productApi.postReview(productId, "This is a great product!", customer.getEmail(), customer.getToken());
+        // Step 2 - Post the review
+        productApi.postReview(productId, "This is a great product!", customer.getEmail());
 
-        // Step 4 - Verify the review was saved
+        // Step 3 - Verify the review was saved
         productApi.verifyReviewExists(productId, customer.getEmail());
     }
 }

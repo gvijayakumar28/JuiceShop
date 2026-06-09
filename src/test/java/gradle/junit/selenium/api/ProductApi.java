@@ -6,9 +6,18 @@ import gradle.junit.selenium.utils.ApiClient;
 import gradle.junit.selenium.utils.ResponseValidator;
 import io.restassured.response.Response;
 
+/**
+ * Handles product-related API calls.
+ * Receives an ApiClient configured with an authenticated spec (Authorization header already set).
+ * No need to pass a token to individual methods — it is baked into the spec.
+ */
 public class ProductApi {
 
-    private final ApiClient client = new ApiClient();
+    private final ApiClient client;
+
+    public ProductApi(ApiClient client) {
+        this.client = client;
+    }
 
     public int getFirstProductId(String searchQuery) {
         Response response = client.get(Endpoints.PRODUCT_SEARCH + "?q=" + searchQuery);
@@ -21,10 +30,11 @@ public class ProductApi {
         return validator.extractInt("data[0].id");
     }
 
-    public void postReview(int productId, String message, String author, String token) {
+    public void postReview(int productId, String message, String author) {
         ReviewRequest reviewRequest = new ReviewRequest(message, author);
 
-        Response response = client.put(Endpoints.productReviews(productId), reviewRequest, token);
+        // Token is already in the spec — no need to pass it here
+        Response response = client.put(Endpoints.productReviews(productId), reviewRequest);
 
         ResponseValidator validator = new ResponseValidator(response);
         validator.checkStatusCode(201);
