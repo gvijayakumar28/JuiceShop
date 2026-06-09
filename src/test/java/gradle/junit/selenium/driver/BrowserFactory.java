@@ -1,11 +1,10 @@
 package gradle.junit.selenium.driver;
-
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
 
 /**
  * Contract that every browser implementation must follow.
- * Each browser (Chrome, Firefox, Edge) provides its own version of these two methods.
+ * Each browser (Chrome, Firefox) provides its own version of these two methods.
  */
 public interface BrowserFactory {
 

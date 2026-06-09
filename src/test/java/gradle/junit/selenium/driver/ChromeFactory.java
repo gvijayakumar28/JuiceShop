@@ -7,7 +7,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -16,8 +15,11 @@ import java.net.URL;
  */
 public class ChromeFactory implements BrowserFactory {
 
-    @Override
-    public MutableCapabilities buildOptions() {
+    /**
+     * Returns ChromeOptions — used by the interface and internally by createDriver().
+     * Keeping this as a private typed method avoids unsafe casting.
+     */
+    private ChromeOptions buildChromeOptions() {
         ChromeOptions options = new ChromeOptions();
 
         // Run without a visible browser window — needed in CI/Docker
@@ -41,13 +43,19 @@ public class ChromeFactory implements BrowserFactory {
         return options;
     }
 
+    /** Satisfies the BrowserFactory interface — delegates to the typed method. */
+    @Override
+    public MutableCapabilities buildOptions() {
+        return buildChromeOptions();
+    }
+
     @Override
     public WebDriver createDriver() {
-        ChromeOptions options = (ChromeOptions) buildOptions();
+        // Uses the typed method directly — no unsafe cast needed
+        ChromeOptions options = buildChromeOptions();
         String execution = ConfigReader.get("execution", "local");
 
         if ("remote".equalsIgnoreCase(execution)) {
-            // Connect to Selenium Grid / BrowserStack / LambdaTest
             String gridUrl = ConfigReader.get("grid.url");
             try {
                 return new RemoteWebDriver(new URL(gridUrl), options);

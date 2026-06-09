@@ -7,7 +7,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -16,8 +15,11 @@ import java.net.URL;
  */
 public class FirefoxFactory implements BrowserFactory {
 
-    @Override
-    public MutableCapabilities buildOptions() {
+    /**
+     * Returns FirefoxOptions — used by the interface and internally by createDriver().
+     * Keeping this as a private typed method avoids unsafe casting.
+     */
+    private FirefoxOptions buildFirefoxOptions() {
         FirefoxOptions options = new FirefoxOptions();
 
         // Run without a visible browser window — needed in CI/Docker
@@ -27,17 +29,28 @@ public class FirefoxFactory implements BrowserFactory {
             options.addArguments("-headless");
         }
 
-        // Open in private mode
+        // Open in private mode — starts with a clean browser state
         if (ConfigReader.getBoolean("incognito")) {
             options.addArguments("-private");
         }
 
+        // Required flags when running inside a Docker container
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+
         return options;
+    }
+
+    /** Satisfies the BrowserFactory interface — delegates to the typed method. */
+    @Override
+    public MutableCapabilities buildOptions() {
+        return buildFirefoxOptions();
     }
 
     @Override
     public WebDriver createDriver() {
-        FirefoxOptions options = (FirefoxOptions) buildOptions();
+        // Uses the typed method directly — no unsafe cast needed
+        FirefoxOptions options = buildFirefoxOptions();
         String execution = ConfigReader.get("execution", "local");
 
         if ("remote".equalsIgnoreCase(execution)) {
