@@ -25,9 +25,8 @@ public class DriverFactory {
         return switch (browser.toLowerCase().trim()) {
             case "chrome"  -> new ChromeFactory();
             case "firefox" -> new FirefoxFactory();
-            case "edge"    -> new EdgeFactory();
             default -> throw new IllegalArgumentException(
-                "Unsupported browser: '" + browser + "'. Supported values: chrome, firefox, edge"
+                "Unsupported browser: '" + browser + "'. Supported values: chrome, firefox"
             );
         };
     }
