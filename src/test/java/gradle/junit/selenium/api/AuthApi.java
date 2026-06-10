@@ -2,9 +2,12 @@ package gradle.junit.selenium.api;
 
 import gradle.junit.selenium.constants.Endpoints;
 import gradle.junit.selenium.model.LoginRequest;
+import gradle.junit.selenium.model.LoginResponse;
 import gradle.junit.selenium.utils.ApiClient;
 import gradle.junit.selenium.utils.ResponseValidator;
 import io.restassured.response.Response;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Handles authentication API calls.
@@ -19,6 +22,7 @@ public class AuthApi {
     }
 
     public String login(String email, String password) {
+        // Request body as POJO — RestAssured serializes it to JSON
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setEmail(email);
         loginRequest.setPassword(password);
@@ -29,6 +33,13 @@ public class AuthApi {
         validator.checkStatusCode(200);
         validator.checkBodyIsNotEmpty();
 
-        return validator.extractString("authentication.token");
+        // Response body as POJO — RestAssured deserializes JSON into LoginResponse
+        LoginResponse loginResponse = response.as(LoginResponse.class);
+
+        // Validate through typed getters — no JsonPath strings
+        assertNotNull(loginResponse.getAuthentication(), "authentication block missing in login response");
+        assertNotNull(loginResponse.getAuthentication().getToken(), "token missing in login response");
+
+        return loginResponse.getAuthentication().getToken();
     }
 }
