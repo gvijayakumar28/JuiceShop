@@ -2,7 +2,9 @@ package gradle.junit.selenium.utils;
 
 import io.restassured.response.Response;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 public class ResponseValidator {
 
@@ -14,9 +16,10 @@ public class ResponseValidator {
 
     // Check the status code is what we expect
     // Example: validator.checkStatusCode(200)
+    // Note: TestNG assertEquals argument order is (actual, expected, message)
     public void checkStatusCode(int expectedStatusCode) {
         int actualStatusCode = response.getStatusCode();
-        assertEquals(expectedStatusCode, actualStatusCode,
+        assertEquals(actualStatusCode, expectedStatusCode,
                 "Status code mismatch. Expected: " + expectedStatusCode + ", Got: " + actualStatusCode);
     }
 
@@ -24,7 +27,7 @@ public class ResponseValidator {
     // Example: validator.checkBodyContains("status", "success")
     public void checkBodyContains(String fieldPath, String expectedValue) {
         String actualValue = response.jsonPath().getString(fieldPath);
-        assertEquals(expectedValue, actualValue,
+        assertEquals(actualValue, expectedValue,
                 "Field '" + fieldPath + "' mismatch. Expected: " + expectedValue + ", Got: " + actualValue);
     }
 

@@ -10,25 +10,21 @@ import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.testng.Assert.assertTrue;
 
 @Epic("JuiceShop Application")
 @Feature("Product Reviews")
-class JuiceTest extends BaseTest {
+public class JuiceTest extends BaseTest {
 
     private static final String BASE_URL = System.getenv().getOrDefault("APP_URL", "http://localhost:3000");
 
-    @Test
-    @Tag("ui")
-    @Tag("smoke")
-    @DisplayName("Login and post product review via UI")
+    @Test(groups = {"ui", "smoke"},
+          description = "Login and post product review via UI")
     @Story("Post review via browser")
     @Description("Login to JuiceShop, open a product, post a review and verify it is visible on screen")
-    void loginAndPostProductReviewViaUi() {
+    public void loginAndPostProductReviewViaUi() {
         String reviewText = "Great product, highly recommended!";
 
         // Step 1 - Open login page and dismiss popups
@@ -53,13 +49,11 @@ class JuiceTest extends BaseTest {
         assertTrue(isReviewPosted, "Review should be visible after posting");
     }
 
-    @Test
-    @Tag("api")
-    @Tag("smoke")
-    @DisplayName("Login and post product review via API")
+    @Test(groups = {"api", "smoke"},
+          description = "Login and post product review via API")
     @Story("Post review via API")
     @Description("Login via API, search for a product, post a review and verify it is saved in the database")
-    void loginAndPostProductReviewViaApi() {
+    public void loginAndPostProductReviewViaApi() {
         // authSpec already has the token — no manual login needed
         ApiClient authClient = new ApiClient(authSpec);
         ProductApi productApi = new ProductApi(authClient);

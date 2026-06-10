@@ -8,9 +8,9 @@ import gradle.junit.selenium.utils.ApiClient;
 import gradle.junit.selenium.utils.ResponseValidator;
 import io.restassured.response.Response;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Handles product-related API calls.
@@ -34,7 +34,7 @@ public class ProductApi {
 
         // Deserialize JSON into typed POJO and validate through getters
         ProductSearchResponse searchResponse = response.as(ProductSearchResponse.class);
-        assertEquals("success", searchResponse.getStatus(), "Search response status should be success");
+        assertEquals(searchResponse.getStatus(), "success", "Search response status should be success");
         assertFalse(searchResponse.getData().isEmpty(), "No products found for query: " + searchQuery);
 
         return searchResponse.getData().get(0).getId();
@@ -63,7 +63,7 @@ public class ProductApi {
 
         // Deserialize JSON into typed POJO
         ReviewsResponse reviewsResponse = response.as(ReviewsResponse.class);
-        assertEquals("success", reviewsResponse.getStatus(), "Reviews response status should be success");
+        assertEquals(reviewsResponse.getStatus(), "success", "Reviews response status should be success");
 
         // Check at least one review belongs to our author — typed access, no JsonPath strings
         boolean reviewFound = reviewsResponse.getData().stream()

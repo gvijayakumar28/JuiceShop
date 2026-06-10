@@ -5,30 +5,32 @@ import gradle.junit.selenium.driver.DriverFactory;
 import gradle.junit.selenium.driver.DriverManager;
 import gradle.junit.selenium.model.Customer;
 import gradle.junit.selenium.utils.ConfigReader;
-import gradle.junit.selenium.utils.ScreenshotOnFailureExtension;
+import gradle.junit.selenium.utils.ScreenshotOnFailureListener;
 import gradle.junit.selenium.utils.TokenManager;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 
 /**
  * Base class for all test classes.
  *
  * Responsibilities:
- *   - Start and stop the browser (WebDriver lifecycle)
+ *   - Start and stop the browser
  *   - Login once and set up RequestSpecifications for API calls
  *   - Expose customer, baseSpec, and authSpec to all test classes
+ *
+ * TestNG notes:
+ *   - @BeforeClass/@AfterClass run once per class and are non-static by default
+ *   - @Listeners registers the screenshot-on-failure listener for all subclasses
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ExtendWith(ScreenshotOnFailureExtension.class)
+@Listeners(ScreenshotOnFailureListener.class)
 public class BaseTest {
 
     private static final Logger log = LoggerFactory.getLogger(BaseTest.class);
@@ -40,8 +42,8 @@ public class BaseTest {
     protected RequestSpecification baseSpec;   // unauthenticated — for calls that don't need a token
     protected RequestSpecification authSpec;   // authenticated  — token already baked in
 
-    @BeforeAll
-    void setup() {
+    @BeforeClass(alwaysRun = true)
+    public void setup() {
         log.info("========== TEST SUITE STARTING: {} ==========", getClass().getSimpleName());
 
         setupBrowser();
@@ -49,8 +51,8 @@ public class BaseTest {
         setupApiSpecs();
     }
 
-    @AfterAll
-    void teardown() {
+    @AfterClass(alwaysRun = true)
+    public void teardown() {
         DriverManager.quitDriver();
         log.info("========== TEST SUITE FINISHED: {} ==========", getClass().getSimpleName());
     }

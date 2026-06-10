@@ -7,7 +7,7 @@ import gradle.junit.selenium.utils.ApiClient;
 import gradle.junit.selenium.utils.ResponseValidator;
 import io.restassured.response.Response;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.testng.Assert.assertNotNull;
 
 /**
  * Handles authentication API calls.

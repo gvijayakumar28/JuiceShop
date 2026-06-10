@@ -13,17 +13,15 @@ dependencies {
     implementation 'io.github.bonigarcia:webdrivermanager:5.9.2'
     testImplementation 'org.hamcrest:hamcrest:3.0'
 
-    def junitJupiterVersion = '5.11.3'
-    testImplementation "org.junit.jupiter:junit-jupiter:$junitJupiterVersion"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
-    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion"
-    testImplementation "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
+    // TestNG — test framework (annotations, assertions, listeners, parallel execution)
+    // 7.9.0 — newer versions (7.10+) are incompatible with Gradle's TestNG adapter
+    testImplementation 'org.testng:testng:7.9.0'
 
     // Jackson — converts JSON responses into POJO objects (response.as(MyPojo.class))
     testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
 
     def allureVersion = '2.29.0'
-    testImplementation "io.qameta.allure:allure-junit5:$allureVersion"
+    testImplementation "io.qameta.allure:allure-testng:$allureVersion"
     testImplementation "io.qameta.allure:allure-rest-assured:$allureVersion"
 
     // SLF4J — logging API (write log messages using this)
@@ -62,35 +60,37 @@ def commonTestConfig = {
     }
 }
 
-// Default task — runs ALL tests
+// Default task — runs the full suite defined in testng.xml
 test {
     configure commonTestConfig
-    useJUnitPlatform()
+    useTestNG {
+        suites 'src/test/resources/testng.xml'
+    }
 }
 
-// Runs only tests tagged with @Tag("smoke")
+// Runs only tests in the "smoke" group
 // Command: .\gradlew smokeTest
 task smokeTest(type: Test) {
     configure commonTestConfig
-    useJUnitPlatform {
-        includeTags 'smoke'
+    useTestNG {
+        includeGroups 'smoke'
     }
 }
 
-// Runs only tests tagged with @Tag("ui")
+// Runs only tests in the "ui" group
 // Command: .\gradlew uiTest
 task uiTest(type: Test) {
     configure commonTestConfig
-    useJUnitPlatform {
-        includeTags 'ui'
+    useTestNG {
+        includeGroups 'ui'
     }
 }
 
-// Runs only tests tagged with @Tag("api")
+// Runs only tests in the "api" group
 // Command: .\gradlew apiTest
 task apiTest(type: Test) {
     configure commonTestConfig
-    useJUnitPlatform {
-        includeTags 'api'
+    useTestNG {
+        includeGroups 'api'
     }
 }
