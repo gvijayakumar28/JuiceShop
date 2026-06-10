@@ -31,7 +31,9 @@ public class ProductApi {
     }
 
     public void postReview(int productId, String message, String author) {
-        ReviewRequest reviewRequest = new ReviewRequest(message, author);
+        ReviewRequest reviewRequest = new ReviewRequest();
+        reviewRequest.setMessage(message);
+        reviewRequest.setAuthor(author);
 
         // Token is already in the spec — no need to pass it here
         Response response = client.put(Endpoints.productReviews(productId), reviewRequest);

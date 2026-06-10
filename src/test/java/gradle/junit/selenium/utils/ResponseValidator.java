@@ -2,8 +2,7 @@ package gradle.junit.selenium.utils;
 
 import io.restassured.response.Response;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ResponseValidator {
 
@@ -32,7 +31,7 @@ public class ResponseValidator {
     // Check the response body is not blank/empty
     public void checkBodyIsNotEmpty() {
         String body = response.getBody().asString();
-        assertTrue(!body.isEmpty(), "Response body was empty");
+        assertFalse(body.isEmpty(), "Response body was empty");
     }
 
     // Check the API responded within a time limit

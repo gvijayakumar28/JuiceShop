@@ -1,6 +1,5 @@
 package gradle.junit.selenium.tests;
 
-import gradle.junit.selenium.api.AuthApi;
 import gradle.junit.selenium.api.ProductApi;
 import gradle.junit.selenium.base.BaseTest;
 import gradle.junit.selenium.pages.LoginPage;

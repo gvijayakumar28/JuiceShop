@@ -19,7 +19,9 @@ public class AuthApi {
     }
 
     public String login(String email, String password) {
-        LoginRequest loginRequest = new LoginRequest(email, password);
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail(email);
+        loginRequest.setPassword(password);
 
         Response response = client.post(Endpoints.LOGIN, loginRequest);
 
