@@ -22,7 +22,6 @@ public class LoginTest extends BaseTest {
         Assert.assertNotNull(productListPage, "User should be login successful");
         LoginPage loginPage1 = productListPage.logout();
         Assert.assertNotNull(loginPage1, "Login page should be displayed");
-
     }
 
     @Test(priority = 2, groups = {"smoke"}, description = "Login via UI")
