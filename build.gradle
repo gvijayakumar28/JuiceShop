@@ -3,11 +3,10 @@ plugins {
     id 'io.qameta.allure' version '2.12.0'
 }
 
-// Compile and run tests with Java 17 (Jenkins LTS ships Java 21 — Gradle 8.x handles that)
+// Java 17 bytecode — runs on Java 17+ (Jenkins has Java 21, no separate JDK install needed)
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
