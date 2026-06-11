@@ -13,8 +13,8 @@
 
     <test name="All Tests">
         <classes>
+            <class name="gradle.junit.selenium.tests.LoginTest"/>
             <class name="gradle.junit.selenium.tests.JuiceTest"/>
         </classes>
     </test>
-
 </suite>
