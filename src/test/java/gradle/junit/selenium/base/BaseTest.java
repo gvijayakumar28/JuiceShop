@@ -34,8 +34,9 @@ import org.testng.annotations.Listeners;
 public class BaseTest {
 
     private static final Logger log = LoggerFactory.getLogger(BaseTest.class);
-
-    private static final String BASE_URL = System.getenv().getOrDefault("APP_URL", "http://localhost:3000");
+    // Jenkins sets APP_URL env var; local runs use config.properties fallback
+    protected static final String BASE_URL = System.getenv().getOrDefault(
+            "APP_URL", ConfigReader.get("APP_URL", "http://localhost:3000"));
 
     // Available to all test classes that extend BaseTest
     protected Customer customer;

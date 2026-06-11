@@ -4,6 +4,9 @@ import gradle.junit.selenium.base.BasePage;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class LoginPage extends BasePage {
 
@@ -14,6 +17,7 @@ public class LoginPage extends BasePage {
     private final By emailField = By.id("email");
     private final By passwordField = By.id("password");
     private final By loginButton = By.id("loginButton");
+    private final By loginError =By.xpath("//div[@class='error ng-star-inserted']");
 
     public LoginPage() {
         super();
@@ -27,13 +31,17 @@ public class LoginPage extends BasePage {
 
     @Step("Dismiss popups")
     public LoginPage dismissPopups() {
+        // Popups only appear on the FIRST page load of a browser session.
+        // Use a short 2s wait here — the default 10s wait would waste ~20s
+        // in every later test when the popups never reappear.
+        WebDriverWait shortWait = new WebDriverWait(driver, Duration.ofSeconds(2));
         try {
-            wait.until(ExpectedConditions.elementToBeClickable(cookieDismissButton)).click();
+            shortWait.until(ExpectedConditions.elementToBeClickable(cookieDismissButton)).click();
         } catch (Exception e) {
             // Cookie popup not present, continue
         }
         try {
-            wait.until(ExpectedConditions.elementToBeClickable(welcomeBannerCloseButton)).click();
+            shortWait.until(ExpectedConditions.elementToBeClickable(welcomeBannerCloseButton)).click();
         } catch (Exception e) {
             // Welcome banner not present, continue
         }
@@ -47,5 +55,16 @@ public class LoginPage extends BasePage {
         click(loginButton);
         waitForUrlToContain("/#/search");
         return new ProductListPage();
+    }
+
+    @Step("Login with email: {email} and {password}")
+    public void enterCredentials(String email, String password) {
+        type(emailField, email);
+        type(passwordField, password);
+        click(loginButton);
+    }
+
+    public boolean isLoginErrorMessageDisplayed(){
+        return isDisplayed(loginError);
     }
 }

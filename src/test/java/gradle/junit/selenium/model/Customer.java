@@ -4,9 +4,9 @@ import java.util.UUID;
 
 public class Customer {
 
-    private String email;
-    private String password;
-    private String securityAnswer;
+    private final String email;
+    private final String password;
+    private final String securityAnswer;
     private String token;
 
     Customer(String email, String password, String securityAnswer) {
@@ -37,7 +37,7 @@ public class Customer {
 
     public static class Builder {
         private String email = String.format("%s@test.com", UUID.randomUUID()
-                .toString().replaceAll("-", "").substring(1, 10));
+                .toString().replace("-", "").substring(1, 10));
         private String password = "test1234";
         private String securityAnswer = "test1234";
 

@@ -6,10 +6,12 @@ import gradle.junit.selenium.pages.LoginPage;
 import gradle.junit.selenium.pages.ProductListPage;
 import gradle.junit.selenium.pages.ReviewPage;
 import gradle.junit.selenium.utils.ApiClient;
+import gradle.junit.selenium.utils.ConfigReader;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertTrue;
@@ -18,10 +20,7 @@ import static org.testng.Assert.assertTrue;
 @Feature("Product Reviews")
 public class JuiceTest extends BaseTest {
 
-    private static final String BASE_URL = System.getenv().getOrDefault("APP_URL", "http://localhost:3000");
-
-    @Test(groups = {"ui", "smoke"},
-          description = "Login and post product review via UI")
+    @Test(groups = {"ui", "smoke"}, description = "Login and post product review via UI")
     @Story("Post review via browser")
     @Description("Login to JuiceShop, open a product, post a review and verify it is visible on screen")
     public void loginAndPostProductReviewViaUi() {
@@ -36,7 +35,7 @@ public class JuiceTest extends BaseTest {
         ProductListPage productListPage = loginPage.loginAs(customer.getEmail(), customer.getPassword());
 
         // Step 3 - Open the first product
-        ReviewPage reviewPage = productListPage.openFirstProduct();
+        ReviewPage reviewPage = productListPage.selectSearchProduct("Strawberry Juice");
 
         // Step 4 - Submit a review
         reviewPage.submitReview(reviewText);
@@ -49,8 +48,27 @@ public class JuiceTest extends BaseTest {
         assertTrue(isReviewPosted, "Review should be visible after posting");
     }
 
-    @Test(groups = {"api", "smoke"},
-          description = "Login and post product review via API")
+    @Test(groups = {"ui", "smoke"}, description = "Search product review via UI")
+    @Story("Search Product via browser")
+    @Description("Search product")
+    public void searchProductiaUi() {
+        String reviewText = "Great product, highly recommended!";
+
+        // Step 1 - Open login page and dismiss popups
+        LoginPage loginPage = new LoginPage();
+        loginPage.open(BASE_URL);
+        loginPage.dismissPopups();
+
+        // Step 2 - Login and land on product list page
+        ProductListPage productListPage = loginPage.loginAs(customer.getEmail(), customer.getPassword());
+
+        // Step 3 - Search product
+        productListPage.searchProduct("Strawberry Juice");
+        boolean isProductDisplayed = productListPage.isProductDisplayed("Strawberry Juice");
+        Assert.assertTrue(isProductDisplayed, "Product should be displayed");
+    }
+
+    @Test(groups = {"api", "smoke"}, description = "Login and post product review via API")
     @Story("Post review via API")
     @Description("Login via API, search for a product, post a review and verify it is saved in the database")
     public void loginAndPostProductReviewViaApi() {
